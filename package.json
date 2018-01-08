@@ -1,0 +1,15 @@
+{
+  "name": "live-edit",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:nycdavid/live-edit.git",
+  "author": "David Ko <david.ko@pvtmethod.com>",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.4.1",
+    "koa-route": "^3.2.0"
+  },
+  "scripts": {
+    "start": "NODE_ENV=development node server.js"
+  }
+}
