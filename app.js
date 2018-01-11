@@ -12,14 +12,16 @@ const Websocket = require('ws');
 const wss = new Websocket.Server({ port: 1338 });
 
 wss.on('connection', function(ws) {
-  wss.on('message', function(message) {
+  const stream = new WebsocketJSONStream(ws);
+  share.listen(stream);
+  ws.on('message', function(message) {
     console.log('message: ', message);
   });
-  wss.send('Connected.');
+  ws.send('Connected.');
 });
 
-const stream = new WebsocketJSONStream(wss);
-share.listen(stream);
+
+
 
 // Static Assets
 App.use(require('koa-static')('./static'))
