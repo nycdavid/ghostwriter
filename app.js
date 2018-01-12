@@ -11,17 +11,24 @@ const connection = share.connect();
 const Websocket = require('ws');
 const wss = new Websocket.Server({ port: 1338 });
 
-wss.on('connection', function(ws) {
+wss.on('connection', ws => {
   const stream = new WebsocketJSONStream(ws);
   share.listen(stream);
-  ws.on('message', function(message) {
+
+  ws.on('message', message => {
     console.log('message: ', message);
   });
+
+  ws.on('error', err => {
+    console.log(err);
+  });
+
   ws.send('Connected.');
 });
 
-
-
+wss.on('disconnect', ws => {
+  console.log('Client disconnected.');
+});
 
 // Static Assets
 App.use(require('koa-static')('./static'))
