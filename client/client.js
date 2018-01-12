@@ -12,3 +12,7 @@ let textArea = document.getElementsByTagName('textarea');
 textArea[0].onkeyup = function register(evt) {
   console.log(evt);
 }
+
+window.addEventListener('beforeunload', () => {
+  ws.close();
+});
