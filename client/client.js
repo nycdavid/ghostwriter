@@ -6,11 +6,21 @@ ws.onmessage = function(evt) {
   console.log(evt);
 };
 
-let notepad = connection.get('notepads', 'mainOne');
-let textArea = document.getElementsByTagName('textarea');
+let textarea = document.querySelector('.counter');
 
-textArea[0].onkeyup = function register(evt) {
-  console.log(evt);
+let doc = connection.get('notepads', 'mainOne');
+doc.fetch(data => {
+  console.log(data);
+});
+console.log(doc);
+doc.subscribe((err) => {
+  console.log(err);
+  console.log(doc.data);
+});
+
+textarea.onclick = function register(evt) {
+  console.log('click');
+  doc.submitOp()
 }
 
 window.addEventListener('beforeunload', () => {
