@@ -14,27 +14,6 @@ const backend = new ShareDB({ db });
 const connection = backend.connect();
 const wss = new Websocket.Server({ server: App });
 
-// wss.on('connection', (ws, req) => {
-//   console.log('connected');
-//   console.log('req:', req);
-//   const stream = new WebsocketJSONStream(ws);
-//   backend.listen(stream);
-//
-//   ws.on('message', message => {
-//     console.log('message: ', message);
-//   });
-//
-//   ws.on('error', err => {
-//     console.log(err);
-//   });
-//
-//   ws.send('Connected.');
-// });
-//
-// wss.on('disconnect', ws => {
-//   console.log('Client disconnected.');
-// });
-
 let doc = connection.get('notepads', 'mainOne');
 doc.fetch(err => {
   console.log('fetch');
@@ -57,12 +36,14 @@ App.use(Views(Path.join(__dirname, '/views'), { extension: 'html' }));
 // Routes
 App.use(_.get('/', Home));
 App.ws.use(ctx => {
-  console.log('WS req incoming');
-  const stream = new WebsocketJSONStream(ws);
+  console.log('WebSocket connected');
+  const stream = new WebsocketJSONStream(ctx.websocket);
   backend.listen(stream);
+  console.log(backend);
   ctx.websocket.on('message', msg => {
     console.log(msg);
   });
+  ctx.websocket.send('foo');
 });
 
 async function Home(ctx) {
