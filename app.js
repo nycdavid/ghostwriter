@@ -36,14 +36,8 @@ App.use(Views(Path.join(__dirname, '/views'), { extension: 'html' }));
 // Routes
 App.use(_.get('/', Home));
 App.ws.use(ctx => {
-  console.log('WebSocket connected');
   const stream = new WebsocketJSONStream(ctx.websocket);
   backend.listen(stream);
-  console.log(backend);
-  ctx.websocket.on('message', msg => {
-    console.log(msg);
-  });
-  ctx.websocket.send('foo');
 });
 
 async function Home(ctx) {

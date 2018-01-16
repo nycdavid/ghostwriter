@@ -1,40 +1,20 @@
 const ShareDB = require('sharedb/lib/client');
-const ws = new WebSocket('ws://localhost:8080');
+const ws = new WebSocket('ws://localhost:1337');
 const connection = new ShareDB.Connection(ws);
 
-global.dbg = {};
-global.dbg.ws = ws;
-global.dbg.connection = connection;
+let textarea = document.querySelector('.counter');
+let doc = connection.get('notepads', 'mainOne');
+doc.subscribe(setNewData);
 
-let doc = connection.get('examples', 'counter');
-doc.subscribe(function() {
-  console.log('subscribe', doc.data);
-});
-global.dbg.doc = doc;
+doc.on('op', setNewData);
 
-ws.onopen = function() {
-  console.log('connection opened');
-  console.log('doc:', doc);
-  doc.subscribe(err => {
-    // console.log('Error:', err);
-    // console.log('Doc Data:', doc.data)
-  });
+function setNewData() {
+  textarea.textContent = doc.data.numClicks;
 }
-doc.on('op', () => {
-  console.log('opopopo');
-});
 
-// let textarea = document.querySelector('.counter');
-//
-// let doc = connection.get('notepads', 'mainOne');
-// console.log('before', doc.pendingFetch);
-// console.log('after', doc.pendingFetch);
-// console.log('canSend:', doc.connection.canSend);
-
-// textarea.onclick = function register(evt) {
-//   console.log('click');
-//   doc.submitOp()
-// }
+textarea.onclick = function register(evt) {
+  doc.submitOp([{ p: ['numClicks'], na: 1 }]);
+}
 
 window.addEventListener('beforeunload', () => {
   ws.close();
