@@ -14,7 +14,7 @@ const backend = new ShareDB({ db });
 const connection = backend.connect();
 const wss = new Websocket.Server({ server: App });
 
-let doc = connection.get('notepads', 'mainOne');
+let doc = connection.get('notepads', 'post1');
 doc.fetch(err => {
   console.log('fetch');
   if (err) {
@@ -22,7 +22,7 @@ doc.fetch(err => {
   }
   if (doc.type === null) {
     console.log('create');
-    doc.create({ numClicks: 0 });
+    doc.create({ blogPost: 'Something\'s here!' });
     return;
   }
 });
