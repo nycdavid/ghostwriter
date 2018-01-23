@@ -22,7 +22,7 @@ doc.fetch(err => {
   }
   if (doc.type === null) {
     console.log('create');
-    doc.create({ blogPost: 'Something\'s here!' });
+    doc.create({ blogPost: 'Test' });
     return;
   }
 });

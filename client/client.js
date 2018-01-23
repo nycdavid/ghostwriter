@@ -9,7 +9,6 @@ doc.subscribe(setNewData);
 doc.on('op', setNewData);
 
 function setNewData() {
-  console.log(doc.data);
   let position = textarea.selectionStart;
   textarea.textContent = doc.data.blogPost;
   textarea.selectionStart = position + 1;
@@ -18,19 +17,16 @@ function setNewData() {
 textarea.onkeypress = function register(evt) {
   let position = evt.target.selectionStart;
   doc.submitOp([{ p: ['blogPost', position], si: evt.key }])
+  evt.preventDefault();
 }
 
 textarea.onkeydown = function(evt) {
   let position = evt.target.selectionStart;
-  let tarea = evt.target;
-  let originalString = tarea.textContent;
   if (evt.key === 'Backspace') {
-    let length = originalString.length;
-    console.log(originalString);
-    let sd = tarea.textContent.substring(length, length - 1);
-    console.log('sd:', sd);
-    console.log('position:', position);
-    doc.submitOp([{ p: ['blogPost', position - 1], sd: sd }])
+    let content = this.textContent;
+    let deletedChar = content.substring(position, position - 1);
+    doc.submitOp([{ p: ['blogPost', position - 1], sd: deletedChar }]);
+    evt.preventDefault();
   }
 }
 
