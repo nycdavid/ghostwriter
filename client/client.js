@@ -20,13 +20,29 @@ textarea.onkeypress = function register(evt) {
   evt.preventDefault();
 }
 
+textarea.addEventListener('pasteEvt', (evt) => {
+  // let cont = document.querySelector('.counter').value;
+  // console.log(cont);
+});
+
+textarea.onkeyup = evt => {
+  let cont = document.querySelector('.counter').value;
+  console.log(evt);
+  console.log(cont);
+}
+
 textarea.onkeydown = function(evt) {
   let position = evt.target.selectionStart;
   if (evt.key === 'Backspace') {
     let content = this.textContent;
     let deletedChar = content.substring(position, position - 1);
     doc.submitOp([{ p: ['blogPost', position - 1], sd: deletedChar }]);
-    evt.preventDefault();
+    return evt.preventDefault();
+  }
+
+  if (evt.metaKey === true && evt.key === 'v') {
+    let keyupEvt = new Event('pasteEvt', { bubbles: true });
+    this.dispatchEvent(keyupEvt);
   }
 }
 
