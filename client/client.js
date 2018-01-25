@@ -16,13 +16,17 @@ function setNewData() {
 
 textarea.onkeypress = function register(evt) {
   let position = evt.target.selectionStart;
+  if (evt.key === 'Enter') {
+    evt.preventDefault();
+    return doc.submitOp([{ p: ['blogPost', position], si: "\n" }]);
+  }
   doc.submitOp([{ p: ['blogPost', position], si: evt.key }])
   evt.preventDefault();
 }
 
 textarea.addEventListener('pasteEvt', (evt) => {
-  // let cont = document.querySelector('.counter').value;
-  // console.log(cont);
+  let cont = document.querySelector('.counter').value;
+  console.log(cont);
 });
 
 textarea.onkeyup = evt => {
@@ -38,11 +42,6 @@ textarea.onkeydown = function(evt) {
     let deletedChar = content.substring(position, position - 1);
     doc.submitOp([{ p: ['blogPost', position - 1], sd: deletedChar }]);
     return evt.preventDefault();
-  }
-
-  if (evt.metaKey === true && evt.key === 'v') {
-    let keyupEvt = new Event('pasteEvt', { bubbles: true });
-    this.dispatchEvent(keyupEvt);
   }
 }
 
