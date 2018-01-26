@@ -6,16 +6,25 @@ const { JSDOM } = jsdom;
 
 describe('Server responds with HTML', () => {
   let server;
-  beforeEach(() => {
+  let dom;
+  beforeEach(async () => {
     server = App.listen();
+    let res = await request(server).get('/');
+    dom = new JSDOM(res.text, {
+      resources: 'usable',
+      runScripts: 'dangerously',
+      beforeParse(window) {
+        window.alert = (alertMsg) => {
+          console.log('ALERT:', alertMsg);
+        }
+      }
+    }).window;
   });
 
-  it('works!', async () => {
-    let res = await request(server).get('/');
-    const dom = new JSDOM(res.text, {
-      url: 'http://localhost',
-      contentType: 'text/html'
-    });
-    console.log('body', dom.window.document.body.innerHTML);
+  it('works!', () => {
+    let textarea = dom.document.querySelector('.counter');
+    let clickEvt = dom.document.createEvent('HTMLEvents');
+    clickEvt.initEvent('click');
+    textarea.dispatchEvent(clickEvt);
   });
 });

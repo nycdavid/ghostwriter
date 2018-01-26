@@ -34,7 +34,7 @@ textarea.addEventListener('pasteEvt', (evt) => {
 });
 
 textarea.onclick = evt => {
-  console.log(evt);
+  window.alert('CLICK');
 }
 
 textarea.onkeyup = evt => {
