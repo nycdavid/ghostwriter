@@ -16,7 +16,6 @@ const wss = new Websocket.Server({ server: App });
 
 let doc = connection.get('notepads', 'post1');
 doc.fetch(err => {
-  console.log('fetch');
   if (err) {
     throw err;
   }
@@ -44,5 +43,4 @@ async function Home(ctx) {
   await ctx.render('index');
 }
 
-App.listen(1337);
-console.log('Listening on 1337...');
+module.exports = App;
