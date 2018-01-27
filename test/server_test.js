@@ -3,22 +3,23 @@ const App = require('../app.js');
 const jsdom = require('jsdom');
 const request = require('supertest');
 const { JSDOM } = jsdom;
+const { createScriptTag, mockAlert, mockConsole } = require('./test_helper.js')
 
 describe('Server responds with HTML', () => {
-  let server;
   let dom;
   beforeEach(async () => {
-    server = App.listen();
+    let server = App.listen();
     let res = await request(server).get('/');
     dom = new JSDOM(res.text, {
-      resources: 'usable',
       runScripts: 'dangerously',
       beforeParse(window) {
-        window.alert = (alertMsg) => {
-          console.log('ALERT:', alertMsg);
-        }
+        window.alert = mockAlert;
+        window.console.log = mockConsole;
       }
     }).window;
+    let scriptTag = createScriptTag(dom);
+    let body = dom.document.querySelector('.body');
+    body.appendChild(scriptTag);
   });
 
   it('works!', () => {
