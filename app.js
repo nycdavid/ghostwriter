@@ -9,7 +9,8 @@ const WebsocketJSONStream = require('websocket-json-stream');
 const Websockify = require('koa-websocket');
 
 const App = Websockify(new Koa());
-const db = require('sharedb-mongo')('mongodb://localhost:27017/test');
+const DbConfig = require('./config/db.js');
+const db = require('sharedb-mongo')(`mongodb://localhost:27017/${DbConfig[process.env.NODE_ENV]}`);
 const backend = new ShareDB({ db });
 const connection = backend.connect();
 const wss = new Websocket.Server({ server: App });

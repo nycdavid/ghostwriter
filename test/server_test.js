@@ -3,7 +3,9 @@ const App = require('../app.js');
 const jsdom = require('jsdom');
 const request = require('supertest');
 const { JSDOM } = jsdom;
-const { createScriptTag, mockAlert, mockConsole } = require('./test_helper.js')
+const { createScriptTag, mockAlert, mockConsole, MongoClient } = require('./test_helper.js')
+
+const context = describe;
 
 describe('Server responds with HTML', () => {
   let dom;
@@ -22,10 +24,21 @@ describe('Server responds with HTML', () => {
     body.appendChild(scriptTag);
   });
 
-  it('works!', () => {
-    let textarea = dom.document.querySelector('.counter');
-    let clickEvt = dom.document.createEvent('HTMLEvents');
-    clickEvt.initEvent('click');
-    textarea.dispatchEvent(clickEvt);
+  // it('works!', () => {
+  //   let textarea = dom.document.querySelector('.counter');
+  //   let clickEvt = dom.document.createEvent('HTMLEvents');
+  //   clickEvt.initEvent('click');
+  //   textarea.dispatchEvent(clickEvt);
+  // });
+
+  context('when the page first loads', () => {
+    it('fetches data from the mongo', async () => {
+      let db = await MongoClient;
+      let notepads = db.collection('notepads');
+      let blogPosts = await notepads.find({ _id: 'post1' }).toArray();
+      let bodyId = blogPosts[0]._o
+      let o_notepads = db.collection('o_notepads');
+      console.log(bodyId);
+    });
   });
 });
