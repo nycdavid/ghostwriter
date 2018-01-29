@@ -4,19 +4,23 @@ const jsdom = require('jsdom');
 const request = require('supertest');
 const { JSDOM } = jsdom;
 const { createScriptTag, mockAlert, mockConsole, MongoClient } = require('./test_helper.js')
+const { Server, WebSocket } = require('mock-socket');
 
 const context = describe;
 
 describe('Server responds with HTML', () => {
   let dom;
   beforeEach(async () => {
-    let server = App.listen();
-    let res = await request(server).get('/');
-    dom = new JSDOM(res.text, {
+    const WebMocketServer = new Server('ws://localhost:1337');
+    WebMocketServer.on('connection', (e) => {
+      console.log(e);
+    });
+    dom = new JSDOM(`<body class="body"><textarea class="counter"></textarea></body>`, {
       runScripts: 'dangerously',
       beforeParse(window) {
         window.alert = mockAlert;
         window.console.log = mockConsole;
+        window.WebSocket = WebSocket;
       }
     }).window;
     let scriptTag = createScriptTag(dom);
@@ -33,12 +37,9 @@ describe('Server responds with HTML', () => {
 
   context('when the page first loads', () => {
     it('fetches data from the mongo', async () => {
-      let db = await MongoClient;
-      let notepads = db.collection('notepads');
-      let blogPosts = await notepads.find({ _id: 'post1' }).toArray();
-      let bodyId = blogPosts[0]._o
-      let o_notepads = db.collection('o_notepads');
-      console.log(bodyId);
+      let textarea = dom.document.querySelector('.counter');
+
+      expect(textarea.textContent).to.equal('Test');
     });
   });
 });
