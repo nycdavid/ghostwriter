@@ -1,0 +1,15 @@
+FROM alpine:3.7
+
+RUN --no-cache add \
+  nodejs ffmpeg \
+  && npm install -g \
+  nightwatch@'<1.0' \
+  && rm -rf \
+  /tmp/* \
+  /root/.npm
+
+RUN adduser -D -u 1000 node
+
+USER node
+
+WORKDIR /home/node
